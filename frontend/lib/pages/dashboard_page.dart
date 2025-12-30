@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../widgets/covenant_card.dart';
 import 'upload_page.dart';
+import 'simulation_page.dart';
+import 'audit_log_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -73,9 +75,15 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
           const SizedBox(height: 48),
           _buildSidebarItem(Icons.dashboard, 'Dashboard', active: true),
-          _buildSidebarItem(Icons.upload_file, 'Ingestion'),
-          _buildSidebarItem(Icons.analytics, 'Risk Analysis'),
-          _buildSidebarItem(Icons.history, 'Audit Logs'),
+          _buildSidebarItem(Icons.upload_file, 'Ingestion', onTap: () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => const UploadPage()));
+          }),
+          _buildSidebarItem(Icons.analytics, 'Risk Analysis', onTap: () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulationPage()));
+          }),
+          _buildSidebarItem(Icons.history, 'Audit Logs', onTap: () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => const AuditLogPage()));
+          }),
           const Spacer(),
           _buildSidebarItem(Icons.settings, 'Settings'),
           const SizedBox(height: 24),
@@ -84,7 +92,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildSidebarItem(IconData icon, String label, {bool active = false}) {
+  Widget _buildSidebarItem(IconData icon, String label, {bool active = false, VoidCallback? onTap}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
@@ -100,7 +108,7 @@ class _DashboardPageState extends State<DashboardPage> {
             fontWeight: active ? FontWeight.bold : FontWeight.normal,
           ),
         ),
-        onTap: () {},
+        onTap: onTap ?? () {},
       ),
     );
   }

@@ -64,11 +64,30 @@ class CovenantCard extends StatelessWidget {
             ),
             const SizedBox(width: 24),
             IconButton(
-              icon: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.blueGrey),
-              onPressed: () {},
+              icon: const Icon(Icons.info_outline, size: 20, color: Colors.blueGrey),
+              onPressed: () {
+                _showExplanation(context);
+              },
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showExplanation(BuildContext context) {
+    final String explanation = data['explanation'] ?? 
+        "The ${data['name']} ratio is calculated as ${data['value']}. ${data['status'] == 'Compliant' ? 'This is within the required legal limits.' : 'This exceeds the maximum threshold of ${data['threshold']} defined in the loan agreement.'}";
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('${data['name']} - Explainable Analysis', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        content: Text(explanation),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+        ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }

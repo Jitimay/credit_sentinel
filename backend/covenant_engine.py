@@ -50,3 +50,18 @@ class CovenantEngine:
             "current_value": current_value,
             "threshold": threshold
         }
+
+    def generate_explanation(self, covenant, result):
+        status = result["status"]
+        name = covenant["name"]
+        val = result["current_value"]
+        thresh = result["threshold"]
+        op = covenant["operator"]
+        
+        if status == "Breach":
+            return f"The {name} ratio of {val} has breached the legal limit of {op} {thresh}. Immediate action required according to Section 4.2 of the agreement."
+        elif status == "Warning":
+            distance = round(abs(val - thresh) / thresh * 100, 1)
+            return f"The {name} ratio is currently {val}, which is within {distance}% of the {thresh} threshold. High risk of breach in the next period."
+        else:
+            return f"The {name} ratio of {val} is currently in compliance with the required {op} {thresh} threshold."
