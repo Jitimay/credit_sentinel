@@ -1,9 +1,26 @@
 services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=creditsentinel
+    ports:
+      - "5432:5432"
+
   creditsentinel:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+    depends_on:
+      - db
     environment:
       - PORT=8000
+      - DATABASE_URL=postgresql://user:password@db:5432/creditsentinel
+
+volumes:
+  postgres_data:

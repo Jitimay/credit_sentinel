@@ -5,3 +5,11 @@ pandas
 openpyxl
 pydantic
 pytest
+sqlalchemy
+alembic
+psycopg2-binary
+passlib[bcrypt]
+python-jose[cryptography]
+pdfplumber
+google-generativeai
+tenacity

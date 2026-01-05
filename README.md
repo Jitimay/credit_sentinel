@@ -5,37 +5,37 @@
 CreditSentinel™ is a full-stack automated platform designed to help lenders monitor complex financial covenants in loan agreements. It replaces manual analyst reviews with an intelligent, explainable, and auditable process.
 
 ## ✨ Key Features
-- 📄 **Covenant Extraction**: Automatically parses legal loan documents (PDF) to identify financial thresholds.
-- 📊 **Financial Analysis**: Compares borrower data (Excel/CSV) against extracted covenants in real-time.
-- ⚠️ **Early Warning System**: Uses trend analysis to predict potential breaches before they happen.
-- 🏢 **Desktop Dashboard**: High-fidelity Flutter dashboard for professional monitoring.
-- 🐳 **Docker Ready**: One-command deployment for the entire stack.
+- 🏢 **Enterprise Global Shell**: Professional navigation rail and loan context management.
+- 🩺 **Loan Health Score**: 0-100 real-time health gauge calculated from covenant compliance.
+- 📄 **Split-View Audit**: Interactive document viewer with side-by-side extraction verification.
+- 🧪 **What-If Simulator**: Advanced stress testing with breach timeline predictions.
+- 🤖 **Explainable AI**: Plain-English justifications for every covenant status and warning.
 
-## 🛠️ Tech Stack
-- **Frontend**: Flutter (Desktop & Web)
-- **Backend**: Python (FastAPI)
-- **AI/NLP**: Pattern-based extraction & Rule-based evaluation engines.
+## 🚀 Getting Started
 
-## 🚀 Quick Start (Docker)
-```bash
-docker-compose up --build
-```
-Access the dashboard at `http://localhost:8000`.
-
-## 📦 Manual Setup
-
-### Backend
+### 1. Backend (FastAPI)
+The central intelligence hub handling data processing and extraction.
 ```bash
 cd backend
 pip install -r requirements.txt
 python main.py
 ```
 
-### Frontend
+### 2. Frontend (Native Desktop)
+Running the high-fidelity monitoring station.
 ```bash
 cd frontend
-flutter run -d linux # or windows/macos
+flutter run -d linux
 ```
 
-## 📄 License
-This project is proprietary. See legal documentation for more details.
+## 🛠️ Tech Stack
+- **UI/UX**: Flutter Desktop, Google Fonts, FL Chart.
+- **Backend**: Python, FastAPI, Pandas.
+- **Audit**: In-memory event logs and explainability engine.
+
+## 🐳 Docker Deployment
+For rapid demonstration, build the consolidated web-accessible container:
+```bash
+docker-compose up --build
+```
+Access at `http://localhost:8000`.

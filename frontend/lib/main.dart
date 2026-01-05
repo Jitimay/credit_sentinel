@@ -1,13 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'widgets/app_shell.dart';
 import 'pages/dashboard_page.dart';
+import 'pages/documents_page.dart';
+import 'pages/simulation_page.dart';
+import 'pages/audit_log_page.dart';
+import 'pages/login_page.dart';
+import 'services/auth_service.dart';
 
 void main() {
-  runApp(const CreditSentinelApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()..init()),
+      ],
+      child: const CreditSentinelApp(),
+    ),
+  );
 }
 
-class CreditSentinelApp extends StatelessWidget {
+class CreditSentinelApp extends StatefulWidget {
   const CreditSentinelApp({super.key});
+
+  @override
+  State<CreditSentinelApp> createState() => _CreditSentinelAppState();
+}
+
+class _CreditSentinelAppState extends State<CreditSentinelApp> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    const DashboardPage(),
+    const DocumentsPage(),
+    const Center(child: Text('Covenant Monitor (Coming Next)')),
+    const Center(child: Text('Financials (Coming Next)')),
+    const SimulationPage(),
+    const AuditLogPage(),
+    const Center(child: Text('Reports (Coming Next)')),
+    const Center(child: Text('Settings (Coming Next)')),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +56,22 @@ class CreditSentinelApp extends StatelessWidget {
           elevation: 4,
         ),
         textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
-          headlineMedium: GoogleFonts.outfit(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          headlineMedium: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1E88E5),
-          brightness: Brightness.dark,
-          secondary: const Color(0xFF10B981),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1E88E5), brightness: Brightness.dark, secondary: const Color(0xFF10B981)),
       ),
-      home: const DashboardPage(),
+      home: Consumer<AuthService>(
+        builder: (context, auth, _) {
+          if (!auth.isAuthenticated) {
+            return const LoginPage();
+          }
+          return AppShell(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (index) => setState(() => _selectedIndex = index),
+            child: _pages[_selectedIndex],
+          );
+        },
+      ),
     );
   }
 }
