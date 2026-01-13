@@ -1,0 +1,14 @@
+{
+  "name": "creditsentinel",
+  "version": "1.0.0",
+  "description": "CreditSentinel™ - AI-Powered Loan Covenant Monitoring",
+  "scripts": {
+    "dev": "python api/index.py",
+    "build": "echo 'Build completed'",
+    "start": "python api/index.py"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": "18.x"
+  }
+}

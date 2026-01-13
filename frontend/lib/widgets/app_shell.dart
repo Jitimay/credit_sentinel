@@ -178,14 +178,9 @@ class _AppShellState extends State<AppShell> {
     );
   }
 }
-          const VerticalDivider(thickness: 1, width: 1, color: Colors.blueGrey),
+          const VerticalDivider(thickness: 1, width: 1),
           Expanded(
-            child: Column(
-              children: [
-                _buildTopBar(),
-                Expanded(child: widget.child),
-              ],
-            ),
+            child: widget.child,
           ),
         ],
       ),
