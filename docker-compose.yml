@@ -1,26 +1,60 @@
 services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   db:
-    image: postgres:15
+    image: postgres:15-alpine
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=creditsentinel
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - POSTGRES_DB=${POSTGRES_DB:-creditsentinel}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   creditsentinel:
     build:
       context: .
       dockerfile: Dockerfile
+      target: production
+    restart: unless-stopped
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       - PORT=8000
-      - DATABASE_URL=postgresql://user:password@db:5432/creditsentinel
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-creditsentinel}
+      - REDIS_URL=redis://redis:6379
+      - ENVIRONMENT=production
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./logs:/app/logs
 
 volumes:
   postgres_data:
+  redis_data:

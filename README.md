@@ -13,6 +13,18 @@ CreditSentinel™ is a full-stack automated platform designed to help lenders mo
 
 ## 🚀 Getting Started
 
+### ⚡ One-Click Launch (Recommended)
+We've provided a script to start the backend (via Docker) and the Linux UI together:
+```bash
+./launch.sh
+```
+
+### Prerequisites (Linux)
+Building the desktop app requires `libsecret-1-dev`. Install it via:
+```bash
+sudo apt-get install libsecret-1-dev
+```
+
 ### 1. Backend (FastAPI)
 The central intelligence hub handling data processing and extraction.
 ```bash

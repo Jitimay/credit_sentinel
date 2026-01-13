@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
 
 class AppShell extends StatefulWidget {
   final Widget child;
@@ -20,34 +22,162 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
+    final isExtended = MediaQuery.of(context).size.width > 1200;
+    
     return Scaffold(
       body: Row(
         children: [
           NavigationRail(
-            extended: MediaQuery.of(context).size.width > 1200,
-            minExtendedWidth: 200,
+            extended: isExtended,
+            minExtendedWidth: 220,
             backgroundColor: const Color(0xFF0F172A),
             selectedIndex: widget.selectedIndex,
             onDestinationSelected: widget.onDestinationSelected,
             leading: Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Image.network(
-                'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // Security icon placeholder
-                height: 40,
-                color: const Color(0xFF1E88E5),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.security,
+                    size: 40,
+                    color: const Color(0xFF1E88E5),
+                  ),
+                  if (isExtended) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      'CreditSentinel™',
+                      style: GoogleFonts.outfit(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            trailing: Consumer<AuthService>(
+              builder: (context, auth, _) => Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (isExtended && auth.user != null) ...[
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E293B),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              auth.user!['email'] ?? 'User',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white70,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              auth.user!['role']?.toUpperCase() ?? 'ANALYST',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    IconButton(
+                      onPressed: () => _showLogoutDialog(context, auth),
+                      icon: const Icon(Icons.logout, color: Colors.red),
+                      tooltip: 'Logout',
+                    ),
+                  ],
+                ),
               ),
             ),
             destinations: const [
-              NavigationRailDestination(icon: Icon(Icons.dashboard_outlined), selectedIcon: Icon(Icons.dashboard), label: Text('Dashboard')),
-              NavigationRailDestination(icon: Icon(Icons.description_outlined), selectedIcon: Icon(Icons.description), label: Text('Loan Documents')),
-              NavigationRailDestination(icon: Icon(Icons.monitor_heart_outlined), selectedIcon: Icon(Icons.monitor_heart), label: Text('Covenant Monitor')),
-              NavigationRailDestination(icon: Icon(Icons.account_balance_outlined), selectedIcon: Icon(Icons.account_balance), label: Text('Financials')),
-              NavigationRailDestination(icon: Icon(Icons.analytics_outlined), selectedIcon: Icon(Icons.analytics), label: Text('What-If Simulator')),
-              NavigationRailDestination(icon: Icon(Icons.notification_important_outlined), selectedIcon: Icon(Icons.notification_important), label: Text('Alerts')),
-              NavigationRailDestination(icon: Icon(Icons.summarize_outlined), selectedIcon: Icon(Icons.summarize), label: Text('Reports')),
-              NavigationRailDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: Text('Settings')),
+              NavigationRailDestination(
+                icon: Icon(Icons.dashboard_outlined), 
+                selectedIcon: Icon(Icons.dashboard), 
+                label: Text('Dashboard')
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.description_outlined), 
+                selectedIcon: Icon(Icons.description), 
+                label: Text('Documents')
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.monitor_heart_outlined), 
+                selectedIcon: Icon(Icons.monitor_heart), 
+                label: Text('Covenants')
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.account_balance_outlined), 
+                selectedIcon: Icon(Icons.account_balance), 
+                label: Text('Financials')
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.analytics_outlined), 
+                selectedIcon: Icon(Icons.analytics), 
+                label: Text('Simulator')
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.history_outlined), 
+                selectedIcon: Icon(Icons.history), 
+                label: Text('Audit Log')
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.summarize_outlined), 
+                selectedIcon: Icon(Icons.summarize), 
+                label: Text('Reports')
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.settings_outlined), 
+                selectedIcon: Icon(Icons.settings), 
+                label: Text('Settings')
+              ),
             ],
           ),
+          const VerticalDivider(thickness: 1, width: 1),
+          Expanded(
+            child: widget.child,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context, AuthService auth) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              auth.logout();
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+  }
+}
           const VerticalDivider(thickness: 1, width: 1, color: Colors.blueGrey),
           Expanded(
             child: Column(

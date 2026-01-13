@@ -8,12 +8,16 @@ import 'pages/simulation_page.dart';
 import 'pages/audit_log_page.dart';
 import 'pages/login_page.dart';
 import 'services/auth_service.dart';
+import 'services/api_service.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()..init()),
+        ProxyProvider<AuthService, ApiService>(
+          update: (_, auth, __) => ApiService(auth),
+        ),
       ],
       child: const CreditSentinelApp(),
     ),
@@ -58,7 +62,26 @@ class _CreditSentinelAppState extends State<CreditSentinelApp> {
         textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
           headlineMedium: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1E88E5), brightness: Brightness.dark, secondary: const Color(0xFF10B981)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF1E88E5), 
+          brightness: Brightness.dark, 
+          secondary: const Color(0xFF10B981)
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          filled: true,
+          fillColor: const Color(0xFF1E293B),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
       ),
       home: Consumer<AuthService>(
         builder: (context, auth, _) {

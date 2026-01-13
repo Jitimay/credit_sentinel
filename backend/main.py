@@ -32,9 +32,6 @@ app.add_middleware(
 engine_ai = CovenantEngine()
 processor = DataProcessor()
 
-# Serve Flutter Web build if it exists
-if os.path.exists("../frontend/build/web"):
-    app.mount("/", StaticFiles(directory="../frontend/build/web", html=True), name="static")
 
 # Helper to log events (persisted to DB)
 def log_event(db: Session, event_type: str, details: str, user_id: int = None):
@@ -185,6 +182,11 @@ async def upload_financials(file: UploadFile = File(...), db: Session = Depends(
         "summary": report,
         "ratios": ratios
     }
+
+
+# Serve Flutter Web build if it exists (at the end to avoid shadowing)
+if os.path.exists("../frontend/build/web"):
+    app.mount("/", StaticFiles(directory="../frontend/build/web", html=True), name="static")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
