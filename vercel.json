@@ -13,7 +13,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/frontend/build/web/$1"
+      "dest": "/web_dist/$1"
     }
   ],
   "env": {

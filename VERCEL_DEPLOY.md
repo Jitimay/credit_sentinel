@@ -15,8 +15,10 @@ vercel --prod
 
 3. **Set Environment Variables** in Vercel Dashboard:
 - `SECRET_KEY`: your-secret-key-here
-- `DATABASE_URL`: sqlite:///./creditsentinel.db (or your PostgreSQL URL)
-- `GEMINI_API_KEY`: your-gemini-api-key (optional)
+- `DATABASE_URL`: sqlite:///./creditsentinel.db
+- `GEMINI_API_KEY`: your-gemini-api-key (OpenRouter key)
+- `GEMINI_MODEL`: google/gemini-2.0-flash-exp:free
+- `OPENROUTER_BASE_URL`: https://openrouter.ai/api/v1
 
 ## Test the Deployment
 

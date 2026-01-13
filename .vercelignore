@@ -1,0 +1,16 @@
+.git
+.github
+.idea
+.vscode
+frontend/
+backend/__pycache__/
+backend/.pytest_cache/
+*.pyc
+*.pyo
+venv/
+.env
+creditsentinel.db
+Dockerfile
+docker-compose.yml
+launch.sh
+logs/
