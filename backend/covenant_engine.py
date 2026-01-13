@@ -3,7 +3,8 @@ import os
 import json
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
-import google.generativeai as genai
+from openai import OpenAI as Client
+import openai as genai # Shadowing for minimal code change in class logic
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 # --- Abstract Strategy ---
@@ -49,11 +50,14 @@ class RegexStrategy(ExtractionStrategy):
             
         return covenants
 
-# --- LLM Strategy (Gemini) ---
+# --- LLM Strategy (OpenRouter / OpenAI Compatible) ---
 class LLMStrategy(ExtractionStrategy):
     def __init__(self, api_key: str):
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.client = genai.Client(
+            base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+            api_key=api_key
+        )
+        self.model_name = os.getenv("GEMINI_MODEL", "google/gemini-2.0-flash-exp:free")
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     def extract(self, text: str) -> List[Dict[str, Any]]:
@@ -69,10 +73,18 @@ class LLMStrategy(ExtractionStrategy):
         Text:
         {text[:8000]}  # Truncate to avoid context limits
         """
-        response = self.model.generate_content(prompt)
+        
         try:
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            
+            content = response.choices[0].message.content
             # Basic cleanup of markdown naming
-            clean_json = response.text.replace("```json", "").replace("```", "")
+            clean_json = content.replace("```json", "").replace("```", "").strip()
             return json.loads(clean_json)
         except Exception as e:
             print(f"LLM Extraction Error: {e}")

@@ -177,15 +177,6 @@ class _AppShellState extends State<AppShell> {
       ),
     );
   }
-}
-          const VerticalDivider(thickness: 1, width: 1),
-          Expanded(
-            child: widget.child,
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildTopBar() {
     return Container(

@@ -1,20 +1,15 @@
 {
   "version": 2,
-  "name": "creditsentinel",
   "builds": [
     {
-      "src": "backend/main_prod.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
-    },
-    {
-      "src": "frontend/build/web/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/backend/main_prod.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/(.*)",
@@ -22,13 +17,7 @@
     }
   ],
   "env": {
-    "DATABASE_URL": "@database_url",
-    "SECRET_KEY": "@secret_key",
-    "GEMINI_API_KEY": "@gemini_api_key"
-  },
-  "functions": {
-    "backend/main_prod.py": {
-      "maxDuration": 30
-    }
+    "DATABASE_URL": "sqlite:///./creditsentinel.db",
+    "SECRET_KEY": "your-secret-key-change-in-production"
   }
 }
