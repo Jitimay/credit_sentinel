@@ -5,7 +5,12 @@ import 'package:http/http.dart' as http;
 
 class AuthService with ChangeNotifier {
   final _storage = const FlutterSecureStorage();
-  final String _baseUrl = const String.fromEnvironment('API_URL', defaultValue: 'http://localhost:8000');
+  String get _baseUrl {
+    if (kIsWeb && kReleaseMode) {
+      return '/api';
+    }
+    return const String.fromEnvironment('API_URL', defaultValue: 'http://localhost:8000');
+  }
 
   String? _token;
   Map<String, dynamic>? _user;

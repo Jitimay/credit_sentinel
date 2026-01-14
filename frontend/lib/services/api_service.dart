@@ -7,7 +7,12 @@ import 'auth_service.dart';
 
 class ApiService {
   final AuthService _authService;
-  final String _baseUrl = const String.fromEnvironment('API_URL', defaultValue: 'http://localhost:8000');
+  String get _baseUrl {
+    if (kIsWeb && kReleaseMode) {
+      return '/api';
+    }
+    return const String.fromEnvironment('API_URL', defaultValue: 'http://localhost:8000');
+  }
 
   ApiService(this._authService);
 
